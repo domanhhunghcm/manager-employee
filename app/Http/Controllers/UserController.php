@@ -13,10 +13,14 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users=User::all();
+        $users = User::all();
+        if ($request->has('search')) {
+            $users = User::where('username', 'like', "%{$request->search}%")->orWhere("last_name", 'like', "%{$request->search}%")->orWhere("first_name", 'like', "%{$request->search}%")->get();
+        }
         return view("users.index",compact("users"));
+
     }
 
     /**
@@ -64,9 +68,8 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user = User::where('id',$id)->first();
         return view("users.edit",compact("user"));
     }
 
@@ -79,12 +82,11 @@ class UserController extends Controller
      */
     public function update(userRequest $request, $id)
     {
-        $user = User::where("id",$id)->update([
+        User::where("id","=",$id)->update([
             "username"=>$request->username,
             "first_name"=>$request->first_name,
             "last_name"=>$request->last_name,
             "email"=>$request->email,
-            "password"=>Hash::make($request->password),
         ]);
 
         return redirect()->route("user.index")->with("success","susccess update");
@@ -96,8 +98,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        if (auth()->user()->id==$user->id) {
+            return redirect()->route('user.edit',$user->id)->with('message', 'State saved correctly!!!');
+        }
+        $user->delete();
+        return redirect()->route("user.index")->with("success","susccess update");
     }
 }

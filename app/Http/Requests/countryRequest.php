@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Validator;
 
-class userRequest extends FormRequest
+class countryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +24,8 @@ class userRequest extends FormRequest
     public function rules()
     {
         return [
-            'username'=>['required','string','max:255'],
-            'first_name'=>['required','string','max:255'],
-            'last_name'=>['required','string','max:255'],
-            'email'=>['required','string','max:255'],
-            'password'=>['required','string','min:8'],
-         ];
+            'country_code'=>['required','string','max:255',"unique:countries"],
+            'name'=>["required","unique:countries"],
+        ];
     }
 }

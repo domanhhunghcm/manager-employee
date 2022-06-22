@@ -7,6 +7,11 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
+                @if (session('message'))
+                    <div class="alert alert-error">
+                        {{ session('message') }}
+                    </div>
+                @endif
                 <div class="card-header">{{ __('Edit User') }}</div>
 
                 <div class="card-body">
@@ -73,7 +78,7 @@
                             <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('password') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="text" class="form-control @error('password') is-invalid @enderror" name="password" value="{{ old('password') }}" required autocomplete="password">
+                                <input id="password" type="text" class="form-control @error('password') is-invalid @enderror" name="password" value="{{ $user->password }}" required autocomplete="password">
 
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
@@ -90,6 +95,13 @@
                                 </button>
                             </div>
                         </div>
+                    </form>
+                </div>
+                <div class="card-footer justify-content-between">
+                    <form method="POST" action="{{ route('user.destroy',$user->id) }}">
+                        @csrf
+                        @method("delete")
+                        <button type="submit" class="btn btn-danger">Delete User</button>
                     </form>
                 </div>
             </div>
