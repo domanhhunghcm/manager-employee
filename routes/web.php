@@ -31,3 +31,10 @@ Route::resource("country",countryController::class);
 Route::resource("state",stateController::class);
 Route::resource("city",cityController::class);
 Route::resource("department",departmentController::class);
+
+Route::get('{any}', function () {
+    return view('employees.index');
+})->where('any', '.*');
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
