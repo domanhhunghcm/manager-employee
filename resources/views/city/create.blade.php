@@ -15,7 +15,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('sate Name') }}</label>
 
                             <div class="col-md-6">
-                                <select  class="form-select" aria-label="Default select example" @error('state_id') is-invalid @enderror" name="state_id" id="state_id">
+                                <select  class="form-select" aria-label="Default select example" name="state_id" id="state_id">
                                     @foreach ($state as $ctry)
                                         <option value="{{ $ctry->id }}">{{ $ctry->name }}</option>
                                     @endforeach

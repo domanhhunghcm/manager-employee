@@ -71,9 +71,9 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{route("country.index")}}">Country</a>
-                        <a class="collapse-item" href="#">State</a>
-                        <a class="collapse-item" href="#">City</a>
-                        <a class="collapse-item" href="#">Department</a>
+                        <a class="collapse-item" href="{{route("state.index")}}">State</a>
+                        <a class="collapse-item" href="{{route("city.index")}}">City</a>
+                        <a class="collapse-item" href="{{route("department.index")}}">Department</a>
                     </div>
                 </div>
             </li>
@@ -217,9 +217,9 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
                     </div>
-                    <div class="row">
+
                         @yield('content')
-                    </div>
+
 
                 </div>
                 <!-- /.container-fluid -->

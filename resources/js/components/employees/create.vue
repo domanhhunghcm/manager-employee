@@ -1,6 +1,5 @@
 <template>
-<h2>do hug</h2>
-    <!-- <div>
+    <div>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
@@ -16,7 +15,7 @@
                         </div>
 
                         <div class="card-body">
-                            <form>
+                            <form @>
                                 <div class="form-group row">
                                     <label
                                         for="first_name"
@@ -29,7 +28,7 @@
                                             id="first_name"
                                             type="text"
                                             class="form-control "
-                                            required
+                                            v-model="form.first_name"
                                         />
                                     </div>
                                 </div>
@@ -45,7 +44,7 @@
                                             id="middle_name"
                                             type="text"
                                             class="form-control "
-                                            required
+                                            v-model="form.middle_name"
                                         />
                                     </div>
                                 </div>
@@ -61,7 +60,7 @@
                                             id="last_name"
                                             type="text"
                                             class="form-control "
-                                            required
+                                            v-model="form.last_name"
                                         />
                                     </div>
                                 </div>
@@ -77,7 +76,7 @@
                                             id="address"
                                             type="text"
                                             class="form-control "
-                                            required
+                                            v-model="form.address"
                                         />
                                     </div>
                                 </div>
@@ -89,13 +88,17 @@
                                     >
 
                                     <div class="col-md-6">
+
                                         <select
+                                         v-model="form.country_id"
+                                        v-on:change="getState()"
                                             name="country"
                                             class="form-control"
                                             aria-label="Default select example"
                                         >
-                                            <option selected
-                                                >Open this select menu</option
+                                            <option
+                                              v-for="item in countries" :value="item.id"
+                                                >{{item.name}}</option
                                             >
                                         </select>
                                     </div>
@@ -109,16 +112,41 @@
 
                                     <div class="col-md-6">
                                         <select
+                                        v-on:change="getCities()"
+                                        v-model="form.state_id"
                                             name="state"
                                             class="form-control"
                                             aria-label="Default select example"
                                         >
-                                            <option selected
-                                                >Open this select menu</option
+                                            <option v-for="state in states" :value="state.id"
+                                                >{{state.name}}</option
                                             >
                                         </select>
                                     </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <label
+                                        for="city"
+                                        class="col-md-4 col-form-label text-md-right"
+                                        >City</label
+                                    >
+
+                                    <div class="col-md-6">
+                                        <select
+                                        v-model="form.city_id"
+                                            name="city"
+                                            class="form-control"
+                                            aria-label="Default select example"
+                                        >
+                                            <option v-for="city in cities"
+                                                >{{city.name}}</option
+                                            >
+                                        </select>
+                                    </div>
+                                </div>
+
+
                                 <div class="form-group row">
                                     <label
                                         for="department"
@@ -128,6 +156,7 @@
 
                                     <div class="col-md-6">
                                         <select
+                                        v-model="form.department_id"
                                             name="department"
                                             class="form-control"
                                             aria-label="Default select example"
@@ -138,25 +167,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label
-                                        for="city"
-                                        class="col-md-4 col-form-label text-md-right"
-                                        >City</label
-                                    >
 
-                                    <div class="col-md-6">
-                                        <select
-                                            name="city"
-                                            class="form-control"
-                                            aria-label="Default select example"
-                                        >
-                                            <option selected
-                                                >Open this select menu</option
-                                            >
-                                        </select>
-                                    </div>
-                                </div>
 
                                 <div class="form-group row">
                                     <label
@@ -170,7 +181,7 @@
                                             id="zip_code"
                                             type="text"
                                             class="form-control "
-                                            required
+                                             v-model="form.zip_code"
                                         />
                                     </div>
                                 </div>
@@ -182,6 +193,7 @@
                                     >
                                     <div class="col-md-6">
                                         <datepicker
+                                         v-model="form.birthdate"
                                             input-class="form-control"
                                         ></datepicker>
                                     </div>
@@ -194,6 +206,7 @@
                                     >
                                     <div class="col-md-6">
                                         <datepicker
+                                         v-model="form.date_hired"
                                             input-class="form-control"
                                         ></datepicker>
                                     </div>
@@ -214,39 +227,77 @@
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 </template>
 
 <script>
-// import Datepicker from "vuejs-datepicker";
-// export default {
-//     components: {
-//         Datepicker
-//     },
-//     data() {
-//         return {
-//             countries: [],
-//             states: [],
-//             departments: [],
-//             cities: []
-//         };
-//     },
-//     created() {
-//         this.getCountries();
-//     },
-//     methods: {
-//         getCountries() {
-//             axios
-//                 .get("/api/employees/countries")
-//                 .then(res => {
-//                     this.countries = res.data;
-//                 })
-//                 .catch(error => {
-//                     console.log(console.error);
-//                 });
-//         }
-//     }
-// };
+import axios from "axios";
+import Datepicker from "vuejs-datepicker";
+export default {
+    components: {
+        Datepicker
+    },
+    data() {
+        return {
+            countries: [],
+            states: [],
+            departments: [],
+            cities: [],
+            form:{
+                last_name:"",
+                first_name:"",
+                middle_name:"",
+                address:"",
+                department_id:"",
+                zip_code:"",
+                birthdate:"",
+                date_hired:"",
+                city_id:"",
+                state_id:"",
+                country_id:""
+            }
+        };
+    },
+    created() {
+        this.getCountries();
+    },
+    methods: {
+        getCities(){
+            axios.get('/api/employees/'+this.form.state_id+'/city')
+            // thenで成功した場合の処理
+            .then((res) => {
+                this.cities=res.data;
+            })
+            // catchでエラー時の挙動を定義
+            .catch(err => {
+                console.log("err:", err);
+            });
+        },
+        getState(){
+            axios.get('/api/employees/'+this.form.country_id+'/state')
+            // thenで成功した場合の処理
+            .then((res) => {
+                this.states=res.data;
+            })
+            // catchでエラー時の挙動を定義
+            .catch(err => {
+                console.log("err:", err);
+            });
+        },
+        getCountries(){
+            axios.get("/api/employees/countries")
+            // thenで成功した場合の処理
+            .then((res) => {
+                this.countries=res.data;
+                console.log("ステータスコード:", res.data);
+            })
+            // catchでエラー時の挙動を定義
+            .catch(err => {
+                console.log("err:", err);
+            });
+        }
+    }
+};
 </script>
 
 <style></style>
